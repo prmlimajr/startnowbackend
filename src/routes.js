@@ -3,9 +3,10 @@ const Router = require('express').Router;
 const UserController = require('./app/controllers/UserController');
 const SessionController = require('./app/controllers/SessionController');
 const RankingController = require('./app/controllers/RankingController');
+const KnowledgeController = require('./app/controllers/KnowledgeController');
+const UserInterestController = require('./app/controllers/UserInterestController');
 
 const authMiddleware = require('./app/middlewares/auth');
-const KnowledgeController = require('./app/controllers/KnowledgeController');
 
 const routes = new Router();
 
@@ -20,5 +21,7 @@ routes.use(authMiddleware);
 routes.put('/users', UserController.update);
 routes.post('/knowledges', KnowledgeController.create);
 routes.put('/knowledges', KnowledgeController.update);
+routes.post('/interests', UserInterestController.create);
+routes.delete('/interests/:id', UserInterestController.delete);
 
 module.exports = routes;
