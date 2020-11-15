@@ -1,4 +1,6 @@
 const Router = require('express').Router;
+const multer = require('multer');
+const multerConfig = require('./config/multer');
 
 const UserController = require('./app/controllers/UserController');
 const SessionController = require('./app/controllers/SessionController');
@@ -6,11 +8,13 @@ const RankingController = require('./app/controllers/RankingController');
 const KnowledgeController = require('./app/controllers/KnowledgeController');
 const UserInterestController = require('./app/controllers/UserInterestController');
 const TeacherController = require('./app/controllers/TeacherController');
+const AppointmentController = require('./app/controllers/AppointmentController');
+const AvatarController = require('./app/controllers/AvatarController');
 
 const authMiddleware = require('./app/middlewares/auth');
-const AppointmentController = require('./app/controllers/AppointmentController');
 
 const routes = new Router();
+const upload = multer(multerConfig);
 
 routes.post('/users', UserController.store);
 routes.get('/users', UserController.listAll);
@@ -31,5 +35,7 @@ routes.delete('/teacher/:id', TeacherController.delete);
 routes.put('/mentoring/:id', AppointmentController.create);
 routes.put('/mentoring/:id/cancel', AppointmentController.delete);
 routes.get('/mentoring', AppointmentController.list);
+routes.post('/avatar', upload.single('file'), AvatarController.create);
+routes.delete('/avatar', AvatarController.delete);
 
 module.exports = routes;
