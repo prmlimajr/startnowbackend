@@ -175,6 +175,61 @@ class TeacherController {
     Logger.success('[200]');
     return res.json({ ok: true });
   }
+
+  async list(req, res) {
+    Logger.header('controller - teacher - list');
+
+    const mentoringExists = await connection('mentoring_relationship')
+      .select(
+        'mentoring_relationship.*',
+
+        'user.first_name as uFirst_name',
+        'user.last_name as uLast_name',
+        'user.short_bio as uShort_bio',
+
+        'avatar.path as aPath',
+
+        'interest.description as iDescription'
+      )
+      .leftJoin('user', 'user.id', 'mentoring_relationship.providerId')
+      .leftJoin('avatar', 'avatar.id', 'user.avatarId')
+      .leftJoin('interest', 'interest.id', 'mentoring_relationship.interestId')
+      .where({ 'mentoring_relationship.clientId': null })
+      .orderBy('mentoring_relationship.appointment', 'desc');
+
+    if (mentoringExists.length === 0) {
+      Logger.error('Empty list');
+
+      return res.status(400).json({ error: 'Empty list' });
+    }
+
+    const mentoringList = mentoringExists.map((row) => {
+      return {
+        id: row.id,
+        provider: {
+          id: row.providerId,
+          firstName: row.uFirst_name,
+          lastName: row.uLast_name,
+          avatar: {
+            path: row.aPath,
+          },
+        },
+        interest: row.iDescription,
+        appointment: row.appointment,
+      };
+    });
+
+    for (let mentor of mentoringList) {
+      const [rating] = await connection('mentoring_relationship')
+        .avg('mentoring_relationship.rating', { as: 'ratings' })
+        .where('mentoring_relationship.providerId', '=', mentor.provider.id);
+
+      mentor.rating = { ...rating };
+    }
+
+    Logger.success('[200]');
+    return res.json(mentoringList);
+  }
 }
 
 module.exports = new TeacherController();

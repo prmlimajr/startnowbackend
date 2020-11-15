@@ -32,6 +32,7 @@ routes.post('/interests', UserInterestController.create);
 routes.delete('/interests/:id', UserInterestController.delete);
 routes.post('/teacher', TeacherController.create);
 routes.put('/teacher/:id', TeacherController.update);
+routes.get('/teacher', TeacherController.list);
 routes.delete('/teacher/:id', TeacherController.delete);
 routes.put('/mentoring/:id', AppointmentController.create);
 routes.put('/mentoring/:id/cancel', AppointmentController.delete);
