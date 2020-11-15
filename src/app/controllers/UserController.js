@@ -11,6 +11,7 @@ class UserController {
       firstName,
       lastName,
       password,
+      confirmPassword,
       birthday,
       email,
       phone,
@@ -19,18 +20,19 @@ class UserController {
       shortBio,
     } = req.body;
     Logger.log(
-      `[${firstName}][${lastName}][${password}][${birthday}][${email}][${phone}][${city}][${state}][${shortBio}]`
+      `[${firstName}][${lastName}][${password}][${confirmPassword}][${birthday}][${email}][${phone}][${city}][${state}][${shortBio}]`
     );
 
     const schema = Yup.object().shape({
       firstName: Yup.string().required(),
       lastName: Yup.string().required(),
-      birthday: Yup.date().required(),
-      city: Yup.string().required(),
-      state: Yup.string().required(),
+      birthday: Yup.date(),
+      city: Yup.string(),
+      state: Yup.string(),
       email: Yup.string().email().required(),
-      phone: Yup.string().required(),
+      phone: Yup.string(),
       password: Yup.string().required().min(6),
+      confirmPassword: Yup.string().required().min(6),
       shortBio: Yup.string(),
     });
 
@@ -49,6 +51,12 @@ class UserController {
     if (emailExists) {
       Logger.error('User already exists');
       return res.status(403).json({ error: 'User already exists' });
+    }
+
+    if (password !== confirmPassword) {
+      Logger.error('Password does not match');
+
+      return res.status(400).json({ error: 'Password does not match' });
     }
 
     /**
