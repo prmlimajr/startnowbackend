@@ -30,5 +30,6 @@ routes.put('/teacher/:id', TeacherController.update);
 routes.delete('/teacher/:id', TeacherController.delete);
 routes.put('/mentoring/:id', AppointmentController.create);
 routes.put('/mentoring/:id/cancel', AppointmentController.delete);
+routes.get('/mentoring', AppointmentController.list);
 
 module.exports = routes;

@@ -117,6 +117,88 @@ class AppointmentController {
       ...appointment,
     });
   }
+
+  async list(req, res) {
+    Logger.header('controller - appointment - list');
+
+    const appointmentAsTeacher = await connection('mentoring_relationship')
+      .select(
+        'mentoring_relationship.*',
+
+        'user.first_name as uFirst_name',
+        'user.last_name as uLast_name',
+
+        'avatar.path as aPath',
+
+        'interest.description as iDescription'
+      )
+      .leftJoin('user', 'user.id', 'mentoring_relationship.clientId')
+      .leftJoin('avatar', 'user.avatarId', 'avatar.id')
+      .leftJoin('interest', 'interest.id', 'mentoring_relationship.interestId')
+      .where('mentoring_relationship.providerId', '=', req.userId)
+      .orderBy('mentoring_relationship.appointment', 'desc');
+
+    const appointmentsAsStudent = await connection('mentoring_relationship')
+      .select(
+        'mentoring_relationship.*',
+
+        'user.first_name as uFirst_name',
+        'user.last_name as uLast_name',
+
+        'avatar.path as aPath',
+
+        'interest.description as iDescription'
+      )
+      .leftJoin('user', 'user.id', 'mentoring_relationship.providerId')
+      .leftJoin('avatar', 'user.avatarId', 'avatar.id')
+      .leftJoin('interest', 'interest.id', 'mentoring_relationship.interestId')
+      .where('mentoring_relationship.clientId', '=', req.userId)
+      .orderBy('mentoring_relationship.appointment', 'desc');
+
+    if (
+      appointmentAsTeacher.length === 0 &&
+      appointmentsAsStudent.length === 0
+    ) {
+      Logger.error('Empty list');
+
+      return res.status(400).json({ error: 'Empty list' });
+    }
+
+    const teaching = appointmentAsTeacher.map((row) => {
+      return {
+        id: row.id,
+        interesting: row.iDescription,
+        appointment: row.appointment,
+        user: {
+          firstName: row.uFirst_name,
+          lastName: row.uLast_name,
+          avatar: {
+            path: row.aPath,
+          },
+        },
+      };
+    });
+
+    const learning = appointmentsAsStudent.map((row) => {
+      return {
+        id: row.id,
+        interesting: row.iDescription,
+        appointment: row.appointment,
+        user: {
+          firstName: row.uFirst_name,
+          lastName: row.uLast_name,
+          avatar: {
+            path: row.aPath,
+          },
+        },
+      };
+    });
+
+    const fullList = [...teaching, ...learning];
+
+    Logger.success('[200]');
+    return res.json(fullList);
+  }
 }
 
 module.exports = new AppointmentController();
