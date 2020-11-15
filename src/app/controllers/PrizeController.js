@@ -51,6 +51,66 @@ class PrizeController {
       wallet: amount,
     });
   }
+
+  async list(req, res) {
+    Logger.header('controller - prize - list');
+
+    const [userExists] = await connection('user')
+      .select('user.*')
+      .where('user.id', '=', req.userId);
+
+    if (!userExists) {
+      Logger.error('User not found');
+
+      return res.status(400).json({ error: 'User not found' });
+    }
+
+    const transactions = await connection('transactions')
+      .select(
+        'transactions.*',
+
+        'user.first_name as uFirst_name',
+        'user.last_name as uLast_name',
+
+        'points.description as pDescription',
+        'points.amount as pAmount',
+
+        'user_points.amount as upAmount'
+      )
+      .leftJoin('user', 'transactions.userId', 'user.id')
+      .leftJoin('points', 'transactions.productId', 'points.id')
+      .leftJoin('user_points', 'user.id', 'user_points.userId')
+      .where('transactions.userId', '=', req.userId)
+      .orderBy('transactions.shoppingTime', 'desc');
+
+    if (transactions.length === 0) {
+      Logger.error('Empty list');
+
+      return res.status(400).json({ error: 'Empty list' });
+    }
+
+    const transactionsList = {
+      user: {
+        firstName: transactions[0].uFirst_name,
+        lastName: transactions[0].uLast_name,
+        wallet: transactions[0].upAmount,
+      },
+    };
+
+    const productList = transactions.map((row) => {
+      return {
+        transaction: row.id,
+        description: row.pDescription,
+        amount: row.pAmount,
+        shoppingTime: row.shoppingTime,
+      };
+    });
+
+    transactionsList.products = productList;
+
+    Logger.success('[200]');
+    return res.json(transactionsList);
+  }
 }
 
 module.exports = new PrizeController();

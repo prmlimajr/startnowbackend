@@ -42,5 +42,6 @@ routes.post('/avatar', upload.single('file'), AvatarController.create);
 routes.delete('/avatar', AvatarController.delete);
 routes.put('/mentoring/rate/:id', RateController.create);
 routes.post('/prize/:id', PrizeController.create);
+routes.get('/prize', PrizeController.list);
 
 module.exports = routes;
