@@ -224,7 +224,7 @@ class TeacherController {
         .avg('mentoring_relationship.rating', { as: 'ratings' })
         .where('mentoring_relationship.providerId', '=', mentor.provider.id);
 
-      mentor.rating = { ...rating };
+      mentor.rating = rating;
     }
 
     Logger.success('[200]');
