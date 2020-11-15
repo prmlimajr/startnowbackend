@@ -16,9 +16,10 @@ class UserController {
       phone,
       city,
       state,
+      shortBio,
     } = req.body;
     Logger.log(
-      `[${firstName}][${lastName}][${password}][${birthday}][${email}][${phone}][${city}][${state}]`
+      `[${firstName}][${lastName}][${password}][${birthday}][${email}][${phone}][${city}][${state}][${shortBio}]`
     );
 
     const schema = Yup.object().shape({
@@ -30,6 +31,7 @@ class UserController {
       email: Yup.string().email().required(),
       phone: Yup.string().required(),
       password: Yup.string().required().min(6),
+      shortBio: Yup.string(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -54,6 +56,8 @@ class UserController {
      */
     const hashedPassword = await bcrypt.hash(password, 8);
 
+    const isNotMentor = 0;
+
     const user = {
       first_name: firstName,
       last_name: lastName,
@@ -64,6 +68,8 @@ class UserController {
       phone,
       lvl: 1,
       password_hash: hashedPassword,
+      short_bio: shortBio,
+      isMentor: isNotMentor,
       created: new Date(),
       updated: new Date(),
     };
@@ -102,23 +108,25 @@ class UserController {
       oldPassword,
       newPassword,
       confirmPassword,
+      shortBio,
     } = req.body;
 
     Logger.header(
-      `[${firstName}][${lastName}][${birthday}][${email}][${phone}][${city}][${state}][${oldPassword}][${newPassword}][${confirmPassword}]`
+      `[${firstName}][${lastName}][${birthday}][${email}][${phone}][${city}][${state}][${oldPassword}][${newPassword}][${confirmPassword}][${shortBio}]`
     );
 
     /**
      * Inputs validator
      */
     const schema = Yup.object().shape({
-      firstName: Yup.string().required(),
-      lastName: Yup.string().required(),
-      birthday: Yup.date().required(),
-      city: Yup.string().required(),
-      state: Yup.string().required(),
-      email: Yup.string().email().required(),
-      phone: Yup.string().required(),
+      firstName: Yup.string(),
+      lastName: Yup.string(),
+      birthday: Yup.date(),
+      city: Yup.string(),
+      state: Yup.string(),
+      email: Yup.string().email(),
+      phone: Yup.string(),
+      shortBio: Yup.string(),
       oldPassword: Yup.string().min(6),
       newPassword: Yup.string()
         .min(6)
@@ -175,6 +183,8 @@ class UserController {
       phone: phone || userExists.phone,
       lvl: userExists.lvl,
       password_hash: hashedPassword,
+      short_bio: shortBio || userExists.shortBio,
+      isMentor: userExists.isMentor,
       avatarId: userExists.avatarId,
       created: userExists.created,
       updated: new Date(),
@@ -222,12 +232,14 @@ class UserController {
         id: row.id,
         firstName: row.first_name,
         lastName: row.last_name,
+        shortBio: row.short_bio,
         birthday: row.birthday,
         email: row.email,
         phone: row.phone,
         city: row.city,
         state: row.state,
         lvl: row.lvl,
+        isMentor: row.isMentor,
         avatarId: row.avatarId,
         created: row.created,
         updated: row.updated,
@@ -287,12 +299,14 @@ class UserController {
         id: row.id,
         firstName: row.first_name,
         lastName: row.last_name,
+        shortBio: row.short_bio,
         birthday: row.birthday,
         email: row.email,
         phone: row.phone,
         city: row.city,
         state: row.state,
         lvl: row.lvl,
+        isMentor: row.isMentor,
         avatarId: row.avatarId,
         created: row.created,
         updated: row.updated,
