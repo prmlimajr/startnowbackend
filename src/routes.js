@@ -12,6 +12,7 @@ const AppointmentController = require('./app/controllers/AppointmentController')
 const AvatarController = require('./app/controllers/AvatarController');
 
 const authMiddleware = require('./app/middlewares/auth');
+const RateController = require('./app/controllers/RateController');
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -37,5 +38,6 @@ routes.put('/mentoring/:id/cancel', AppointmentController.delete);
 routes.get('/mentoring', AppointmentController.list);
 routes.post('/avatar', upload.single('file'), AvatarController.create);
 routes.delete('/avatar', AvatarController.delete);
+routes.put('/mentoring/rate/:id', RateController.create);
 
 module.exports = routes;
