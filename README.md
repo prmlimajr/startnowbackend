@@ -46,7 +46,7 @@ com uma moeda virtual que habilita o acesso a conteúdos específicos e estimula
 
 <p>Para criar a base de dados, siga o passo a passo abaixo:</p>
 
-<p>Em seu editor SQL cole o <a href="#">código</a> e execute-os.</p>
+<p>Em seu editor SQL acesse o arquivo database.sql na raiz do projeto e execute suas linhas.</p>
 
 <h5>🚧 TODO: Implementar fluxo de migrations através do Knex para possibilitar evitar esta etapa de criação manual do banco de dados.</h5>
 
