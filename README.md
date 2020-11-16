@@ -83,5 +83,5 @@ com uma moeda virtual que habilita o acesso a conteúdos específicos e estimula
   <li><a href="https://www.linkedin.com/in/elizete-almeida-ba6918197/">Elizete Almeida</a> - Negócios</li>
   <li><a href="https://www.linkedin.com/in/guilherme-ranieri/">Guilherme Ranieri</a> - UX/UI</li>
   <li><a href="https://www.linkedin.com/in/prmlimajr/">Paulo Lima</a> - Desenvolvimento do Backend</li>
-  <li><a href="#">Nicholas </a> - Desenvolvimento do Frontend</li>  
+  <li><a href="https://www.linkedin.com/in/nicholas-lima-a360311bb/">Nicholas Lima</a> - Desenvolvimento do Frontend</li>  
  </ul>
